@@ -1,7 +1,4 @@
-<?php
 
-require('vues.php');
-?>
 
 <!doctype html>
 <html lang="fr">
@@ -16,14 +13,5 @@ require('vues.php');
     <title>Explorateur de fichiers</title>
   </head>
   <body>
-   <main class="row">
-   <section class="col-xs-12">
-<?php
-   print_ls('/home/vincent');
-
-?>
-</section>
-  </main>
-   <script src="controle.js"></script>
 </body>
 </html>
