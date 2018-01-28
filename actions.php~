@@ -1,0 +1,23 @@
+<?php
+require('vues.php');
+
+function update_lst($dir, $tri, $ordre) {
+  print_ls($dir, $tri, $ordre);
+}
+
+$dir='/home';
+if (isset($_GET['dir'])) {
+  $dir = $_GET['dir'];
+}
+$tri='nom';
+if (isset($_GET['tri'])) {
+  $tri = $_GET['tri'];
+}
+
+$ordre='asc';
+if (isset($_GET['ordre'])) {
+  $ordre = $_GET['ordre'];
+}
+
+update_lst($dir, $tri, $ordre);
+?>

@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 
 function human_filesize($bytes, $decimals = 2) {
   $sz = 'BKMGTP';
@@ -12,6 +13,10 @@ $assoc_mime = array('directory' => 'icone-repertoire.png',
 		    );
 
 function icone_mime($mime) {
+$assoc_mime = array('directory' => 'icone-repertoire.png',
+		    'application/pdf' => 'icone-pdf.png',
+		    );  
+
   if (isset($assoc_mime[$mime])) return $assoc_mime[$mime];
   else return 'icone-fichier.png';
 }
@@ -72,10 +77,37 @@ function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
   if ($dir = scandir($rep)) {
     $lst = build_tab($rep, scandir($rep), $tri, $ordre);
     foreach ($lst as $idx => $elem) {
-      echo "<article class='fic'>";
-      echo "<img src='".$elem['icone']."'/>";
-      echo "<p>".$elem['nom']."</p>";
-      echo "</article>";
+      if ($elem['nom'] != '.') { 
+
+
+	$cache="";
+	if (substr($elem['nom'], 0, 1) == '.' && $elem['nom'] != '..') {
+	  $cache = " cache";
+	}
+	echo "<article class='col-6 fic $cache'>";
+	if (strlen($elem['nom']) > 12) {
+	  $nom=substr($elem['nom'], 0, 12).'...';
+	} else {
+	  $nom = $elem['nom'];
+	}
+	$chemin = $rep.'/'.$elem['nom'];
+	if (is_dir($chemin)){
+	  $id = '';
+	  $chemin = $rep.'/'.$elem['nom'];
+	  if ($rep == '/') {
+	    $chemin = '/'.$elem['nom'];
+	  }
+	  if ($elem['nom'] == '..') {
+	    $id = "id='elemUp'";
+	    $chemin = dirname($rep);
+	  }
+	  echo "<img $id class='bout-rep' data-path='".$chemin."' src='".$elem['icone']."'/>";
+	} else {
+	  echo "<img data-toggle='modal' data-target='#infos' src='".$elem['icone']."'/>";
+	}
+	echo "<p>".$nom."</p>";
+	echo "</article>";
+      }
     }
   }
 }
