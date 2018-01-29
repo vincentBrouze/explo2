@@ -13,64 +13,58 @@ function expandDir(evt) {
     var chemin = evt.target.dataset.path;
 
 
-    loadLst(chemin);/*
-    $('#lst').load('actions.php', 'dir=' + chemin, 
-		    function() {
-			$('.bout-rep').click(expandDir);
-			$('.cache').toggle();
-		    });
-    $('#monPath').val(chemin);*/
+    loadLst(chemin);
 }
 
 function butUp(evt) {
     var chemin = $('#elemUp').data('path');
 
-    loadLst(chemin);/*
-    $('#lst').load('actions.php', 'dir=' + chemin, 
-		    function() {
-			$('.bout-rep').click(expandDir);
-			$('.cache').toggle();
-		    });
-    $('#monPath').val(chemin);
-*/
+    loadLst(chemin);
 }
 
 function butHome(evt) {
     var chemin = '/home/vincent';
 
-    loadLst(chemin);/*
-    $('#lst').load('actions.php', '', 
-		    function() {
-			$('.bout-rep').click(expandDir);
-			$('.cache').toggle();
-		    });
-
-    $('#monPath').val(chemin);*/
+    loadLst(chemin);
 }
 
 
 function changePath() {
     var chemin = $('#monPath').val();
 
-    loadLst(chemin);/*
-    $('#lst').load('actions.php', 'dir=' + chemin, 
-		    function() {
-			$('.bout-rep').click(expandDir);
-			$('.cache').toggle();
-		    });
-    */
+    loadLst(chemin);
 }
 
 function toggleCaches(evt) {
     $('.cache').toggle();
 }
 
+
+function majInfos(datas) {
+    console.log("Infos récupérées");
+
+    $("#infosTaille").html(datas[0]);
+    $("#infosProprio").html(datas[1]);
+    $("#infosGroupe").html(datas[2]);
+    $("#infosPerms").html(datas[3]);
+    $("#infosType").html(datas[4]);
+    $("#infosMod").html(datas[5]);
+
+    return;
+}
+
 function prepInfos(evt) {
     var elem = evt.relatedTarget;
+    var url = "actions.php?fic=" + elem.dataset.fic;
 
     console.log("modal show");
-    $('#infos .modal-header h4').html("Nom de fichier");
+    $('#infos .modal-header h4').html(elem.dataset.fic);
     
+    $.ajax({
+	dataType: "json",
+	url: url,
+	success: majInfos
+    });
 }
 
 function init() {

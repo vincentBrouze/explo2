@@ -20,7 +20,21 @@ header h1 {
 
 #nav button {
     padding: 0;
-    margin: 1px 3px;
+}
+
+#ligneNav {
+    display: flex;
+}
+
+#up, #home {
+    flex: auto 0 1;
+    min-width: 30px;
+    margin-right: 4px;
+}
+
+#monPath {
+    width: auto;
+    flex: auto 1 0;
 }
 
 /* Hierarchie */

@@ -51,16 +51,19 @@ function build_tab($rep, $dir, $tri, $ordre) {
   */
   foreach ($dir as $idx => $nom) {
     $nomComp = $rep.'/'.$nom;
-    $infos = stat($nomComp);
-    $type = mime_content_type($nomComp);
-
-    $lst[$i]['nom'] = $nom;
-    $lst[$i]['type'] = mime_content_type($nomComp);
-    $lst[$i]['icone'] = icone_mime($lst[$i]['type']);
-    $lst[$i]['taille'] = $infos["size"];
-    $lst[$i]['date'] = $infos["mtime"];
-    $i++;
+    if (fileperms($nomComp) & 0x0004) {
+      $infos = stat($nomComp);
+      $type = mime_content_type($nomComp);
+      
+      $lst[$i]['nom'] = $nom;
+      $lst[$i]['type'] = mime_content_type($nomComp);
+      $lst[$i]['icone'] = icone_mime($lst[$i]['type']);
+      $lst[$i]['taille'] = $infos["size"];
+      $lst[$i]['date'] = $infos["mtime"];
+      $i++;
+    }
   }
+
   /* Trie le tableau en fonction des critères donnés */
   usort($lst, comp_fic($tri, $ordre));
   return $lst;
@@ -78,18 +81,19 @@ function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
     $lst = build_tab($rep, scandir($rep), $tri, $ordre);
     foreach ($lst as $idx => $elem) {
       if ($elem['nom'] != '.') { 
-
-
 	$cache="";
 	if (substr($elem['nom'], 0, 1) == '.' && $elem['nom'] != '..') {
 	  $cache = " cache";
 	}
-	echo "<article class='col-6 fic $cache'>";
+
+	echo "<article class='col-6 col-sm-4 col-md-3 col-lg-2 fic $cache'>";
+
 	if (strlen($elem['nom']) > 12) {
 	  $nom=substr($elem['nom'], 0, 12).'...';
 	} else {
 	  $nom = $elem['nom'];
 	}
+
 	$chemin = $rep.'/'.$elem['nom'];
 	if (is_dir($chemin)){
 	  $id = '';
@@ -103,7 +107,7 @@ function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
 	  }
 	  echo "<img $id class='bout-rep' data-path='".$chemin."' src='".$elem['icone']."'/>";
 	} else {
-	  echo "<img data-toggle='modal' data-target='#infos' src='".$elem['icone']."'/>";
+	  echo "<img data-fic='$chemin' data-toggle='modal' data-target='#infos' src='".$elem['icone']."'/>";
 	}
 	echo "<p>".$nom."</p>";
 	echo "</article>";

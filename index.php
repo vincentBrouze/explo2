@@ -20,12 +20,16 @@ $repBase = '/home/vincent';
   <body>
   <header><h1>Explorateur</h1></header>
    <main class="container">
-  <nav id="nav" class="row col-12 ">
-  <button class='btn col-1' id='up'><i class="fa fa-arrow-up"></i></button>
-  <button class='btn col-1' id='home'><i class="fas fa-home"></i></button>
-  <input id='monPath' value='<?php echo $repBase; ?>' class='form-control col-9' type='text'></intput>
-  <input class='form' id='checkCache' type="checkbox"></input>Afficher les fichiers cachés.
-  
+
+
+  <nav id="nav" >
+  <div id="ligneNav">
+  <button class='form-control btn' id='up'><i class="fa fa-arrow-up"></i></button>
+  <button class='form-control btn' id='home'><i class="fas fa-home"></i></button>
+  <input id='monPath' value='<?php echo $repBase; ?>' class='form-control' type='text'></intput>
+  </div>
+  <input id='checkCache' type="checkbox"></input>
+  <label class="form-check-label" for="checkCache">Afficher les fichiers cachés</label>
   </nav>
    <section id="lst" class="row">
 <?php
@@ -39,18 +43,17 @@ $repBase = '/home/vincent';
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        <h4 class="modal-title"></h4>
       </div>
      <div class="modal-body">
   <table class="table">
   <tbody>
-  <tr><th>Taille :</th><td>1.32Mo</td></tr>
-  <tr><th>Propriétaire :</th><td>vincent</td></tr>
-  <tr><th>Groupe :</th><td>vincent</td></tr>
-  <tr><th>Permissions :</th><td>rwxr-xr-x</td></tr>
-  <tr><th>Type :</th><td>text/plain</td></tr>
-  <tr><th>Modifié le :</th><td>19/01/2018 9h42:23s</td></tr>
+  <tr><th>Taille :</th><td id="infosTaille"></td></tr>
+  <tr><th>Propriétaire :</th><td id="infosProprio"></td></tr>
+  <tr><th>Groupe :</th><td id="infosGroupe"></td></tr>
+  <tr><th>Permissions :</th><td id="infosPerms"></td></tr>
+  <tr><th>Type :</th><td id="infosType"></td></tr>
+  <tr><th>Modifié le :</th><td id="infosMod"></td></tr>
   </tbody>
 </table>
      </div>
