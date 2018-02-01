@@ -30,6 +30,16 @@ $repBase = '/home/vincent';
   </div>
   <input id='checkCache' type="checkbox"></input>
   <label class="form-check-label" for="checkCache">Afficher les fichiers cachés</label>
+  <div>
+  <label class="form-check-label" for="choixTri">Trier les fichiers par:</label>
+  <select id='tri' class="form-control">
+  <option value='nom'>Nom</option>
+  <option value='type'>Type</option>
+  <option value='date'>Date</option>
+  </select>
+  </div> 
+  <label class="form-check-label">Uploader un fichier:</label>
+  <input id='upFile' type="file"></input>
   </nav>
    <section id="lst" class="row">
 <?php
@@ -39,6 +49,18 @@ $repBase = '/home/vincent';
 </section>
   </main>
 
+<div class="modal fade" id="upInfos" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="infos" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">

@@ -73,7 +73,7 @@ function build_tab($rep, $dir, $tri, $ordre) {
 
 /* Imprime la liste des fichiers du répertoire */
 function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
-  $lst = build_tab($rep, scandir($rep), 'date', 'desc');
+  $lst = build_tab($rep, scandir($rep), $tri, $ordre);
   
   /*print_r($lst);*/
 
@@ -88,8 +88,8 @@ function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
 
 	echo "<article class='col-6 col-sm-4 col-md-3 col-lg-2 fic $cache'>";
 
-	if (strlen($elem['nom']) > 12) {
-	  $nom=substr($elem['nom'], 0, 12).'...';
+	if (strlen($elem['nom']) > 15) {
+	  $nom=substr($elem['nom'], 0, 15).'...';
 	} else {
 	  $nom = $elem['nom'];
 	}

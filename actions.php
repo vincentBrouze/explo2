@@ -1,6 +1,17 @@
 <?php
 require('vues.php');
 
+function upFile() {
+  $chemin = $_POST['fic_chemin'];
+  $dest = $chemin.'/'.basename($_FILES['file']['name']);
+  
+  if (move_uploaded_file($_FILES['file']['tmp_name'], $dest)) {
+    echo json_encode(true);
+  } else {
+    echo json_encode(false);
+  }
+}
+
 function update_lst($dir, $tri, $ordre) {
   print_ls($dir, $tri, $ordre);
 }
@@ -78,8 +89,13 @@ function getFileInfos($fic) {
 }
 
 if (isset($_GET['fic'])) {
+  /* Infos Fichiers*/
   getFileInfos($_GET['fic']);
-} else {
+} else if (isset($_POST['fic_chemin'])) {
+  /* Upload */
+  upFile();
+} else if (isset($_GET['dir'])){
+  /* Maj lst */
   $dir='/home/vincent';
   if (isset($_GET['dir'])) {
     $dir = $_GET['dir'];
@@ -93,7 +109,7 @@ if (isset($_GET['fic'])) {
   if (isset($_GET['ordre'])) {
     $ordre = $_GET['ordre'];
   }
-
+  
   update_lst($dir, $tri, $ordre);
 }
 
