@@ -2,10 +2,15 @@
 error_reporting(E_ERROR | E_PARSE);
 
 /* Change une taille en octets en taille human readable */
-function human_filesize($bytes, $decimals = 2) {
-  $sz = 'BKMGTP';
-  $factor = floor((strlen($bytes) - 1) / 3);
-  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+function human_filesize($taille, $decimales = 2) {
+  /* tableau des unités*/
+  $unites = 'BKMGTP';
+
+  /* Determine l'unite à utiliser en fct du nombre de chiffres */
+  $facteur = floor((strlen($taille) - 1) / 3);
+  
+  /* La taille arrondie à $decimales avec l'unité*/
+  return sprintf("%.{$decimales}f", $taille / pow(1024, $facteur)) . @$unites[$facteur];
 }
 
 /* Convertit les permission en chaines de caractère type 'll' */
@@ -60,15 +65,13 @@ function human_mod($perms) {
   return $info;
 }
 
-/* Tableau d'association entre type mime et icone */
-$assoc_mime = array('directory' => 'icone-repertoire.png',
-		    'application/pdf' => 'icone-pdf.png',
-		    );
-
 /* Renvoie un nom de fichieer iucone en fonction du type mime */
 function icone_mime($mime) {
+/* Tableau d'association entre type mime et icone,
+*/
 $assoc_mime = array('directory' => 'icone-repertoire.png',
 		    'application/pdf' => 'icone-pdf.png',
+		    /* à complèter */
 		    );  
 
   if (isset($assoc_mime[$mime])) return $assoc_mime[$mime];
@@ -141,14 +144,17 @@ function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
     $lst = build_tab($rep, $dir, $tri, $ordre);
     /* Parcourt le tableau des fichiers et genere le code HTML */
     foreach ($lst as $idx => $elem) {
+      /* exclut '.' */
       if ($elem['nom'] != '.') { 
 	$cache="";
+	/* Gere les fichiers cachés : class cache */
 	if (substr($elem['nom'], 0, 1) == '.' && $elem['nom'] != '..') {
 	  $cache = " cache";
 	}
 
 	echo "<article class='col-6 col-sm-4 col-md-3 col-lg-2 fic $cache'>";
 
+	/* Coupe les noms trop longs avec ... */
 	if (strlen($elem['nom']) > 15) {
 	  $nom=substr($elem['nom'], 0, 15).'...';
 	} else {
