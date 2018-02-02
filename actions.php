@@ -1,6 +1,10 @@
 <?php
 require('vues.php');
 
+/* Gere une requete d'upload 
+   imprime true ou false en JSON
+   selon réussite ou echec.
+*/
 function upFile() {
   $chemin = $_POST['fic_chemin'];
   $dest = $chemin.'/'.basename($_FILES['file']['name']);
@@ -12,63 +16,23 @@ function upFile() {
   }
 }
 
+/* Mise à jour du contenu principal : renvoie le code html à intégrer 
+   à la page
+*/
 function update_lst($dir, $tri, $ordre) {
   print_ls($dir, $tri, $ordre);
 }
 
 
-/* Convertit les permission en chaines de caractère type 'll' */
-function human_mod($perms) {
-  if (($perms & 0xC000) == 0xC000) {
-    // Socket
-    $info = 's';
-  } elseif (($perms & 0xA000) == 0xA000) {
-    // Lien symbolique
-    $info = 'l';
-  } elseif (($perms & 0x8000) == 0x8000) {
-    // Régulier
-    $info = '-';
-  } elseif (($perms & 0x6000) == 0x6000) {
-    // Block special
-    $info = 'b';
-  } elseif (($perms & 0x4000) == 0x4000) {
-    // Dossier
-    $info = 'd';
-  } elseif (($perms & 0x2000) == 0x2000) {
-    // Caractère spécial
-    $info = 'c';
-  } elseif (($perms & 0x1000) == 0x1000) {
-    // pipe FIFO
-    $info = 'p';
-  } else {
-    // Inconnu
-    $info = 'u';
-}
-  
-  // Autres
-  $info .= (($perms & 0x0100) ? 'r' : '-');
-  $info .= (($perms & 0x0080) ? 'w' : '-');
-  $info .= (($perms & 0x0040) ?
-            (($perms & 0x0800) ? 's' : 'x' ) :
-            (($perms & 0x0800) ? 'S' : '-'));
-  
-  // Groupe
-  $info .= (($perms & 0x0020) ? 'r' : '-');
-  $info .= (($perms & 0x0010) ? 'w' : '-');
-  $info .= (($perms & 0x0008) ?
-            (($perms & 0x0400) ? 's' : 'x' ) :
-            (($perms & 0x0400) ? 'S' : '-'));
-  
-  // Tout le monde
-  $info .= (($perms & 0x0004) ? 'r' : '-');
-  $info .= (($perms & 0x0002) ? 'w' : '-');
-  $info .= (($perms & 0x0001) ?
-            (($perms & 0x0200) ? 't' : 'x' ) :
-            (($perms & 0x0200) ? 'T' : '-'));
-
-return $info;
-}
-
+/* Contruit et imprime au format JSON un tableau
+   des infos sur un fichier :
+   - taille 
+   - proprio
+   - groupe
+   - permissions
+   - type mime
+   - date dernière modification 
+ */
 function getFileInfos($fic) {
   $datas = array();
 
@@ -88,6 +52,7 @@ function getFileInfos($fic) {
   echo $msg;
 }
 
+/* Gere les parametre et determine l'action a effectuer en fonction */
 if (isset($_GET['fic'])) {
   /* Infos Fichiers*/
   getFileInfos($_GET['fic']);

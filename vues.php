@@ -1,17 +1,71 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
 
+/* Change une taille en octets en taille human readable */
 function human_filesize($bytes, $decimals = 2) {
   $sz = 'BKMGTP';
   $factor = floor((strlen($bytes) - 1) / 3);
   return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
 }
 
-/* */
+/* Convertit les permission en chaines de caractère type 'll' */
+function human_mod($perms) {
+  if (($perms & 0xC000) == 0xC000) {
+    // Socket
+    $info = 's';
+  } elseif (($perms & 0xA000) == 0xA000) {
+    // Lien symbolique
+    $info = 'l';
+  } elseif (($perms & 0x8000) == 0x8000) {
+    // Régulier
+    $info = '-';
+  } elseif (($perms & 0x6000) == 0x6000) {
+    // Block special
+    $info = 'b';
+  } elseif (($perms & 0x4000) == 0x4000) {
+    // Dossier
+    $info = 'd';
+  } elseif (($perms & 0x2000) == 0x2000) {
+    // Caractère spécial
+    $info = 'c';
+  } elseif (($perms & 0x1000) == 0x1000) {
+    // pipe FIFO
+    $info = 'p';
+  } else {
+    // Inconnu
+    $info = 'u';
+  }
+  
+  // Autres
+  $info .= (($perms & 0x0100) ? 'r' : '-');
+  $info .= (($perms & 0x0080) ? 'w' : '-');
+  $info .= (($perms & 0x0040) ?
+            (($perms & 0x0800) ? 's' : 'x' ) :
+            (($perms & 0x0800) ? 'S' : '-'));
+  
+  // Groupe
+  $info .= (($perms & 0x0020) ? 'r' : '-');
+  $info .= (($perms & 0x0010) ? 'w' : '-');
+  $info .= (($perms & 0x0008) ?
+            (($perms & 0x0400) ? 's' : 'x' ) :
+            (($perms & 0x0400) ? 'S' : '-'));
+  
+  // Tout le monde
+  $info .= (($perms & 0x0004) ? 'r' : '-');
+  $info .= (($perms & 0x0002) ? 'w' : '-');
+  $info .= (($perms & 0x0001) ?
+            (($perms & 0x0200) ? 't' : 'x' ) :
+            (($perms & 0x0200) ? 'T' : '-'));
+
+  return $info;
+}
+
+/* Tableau d'association entre type mime et icone */
 $assoc_mime = array('directory' => 'icone-repertoire.png',
 		    'application/pdf' => 'icone-pdf.png',
 		    );
 
+/* Renvoie un nom de fichieer iucone en fonction du type mime */
 function icone_mime($mime) {
 $assoc_mime = array('directory' => 'icone-repertoire.png',
 		    'application/pdf' => 'icone-pdf.png',
@@ -21,6 +75,9 @@ $assoc_mime = array('directory' => 'icone-repertoire.png',
   else return 'icone-fichier.png';
 }
 
+/* Fonction de comparaison selon les criteres $tri et $ordre 
+   a utiliser avec usort()
+*/
 function comp_fic($tri, $ordre) {
   if (($tri == 'nom' || $tri == 'type') && $ordre == 'asc') {
     return function($a, $b) use($tri) {
@@ -42,6 +99,7 @@ function comp_fic($tri, $ordre) {
   }
 }
 
+/* Renvoie un tableau des fichiers de $rep */
 function build_tab($rep, $dir, $tri, $ordre) {
   $lst = array();
   $i = 0;
@@ -66,19 +124,22 @@ function build_tab($rep, $dir, $tri, $ordre) {
 
   /* Trie le tableau en fonction des critères donnés */
   usort($lst, comp_fic($tri, $ordre));
+
   return $lst;
 }
 
 
 
-/* Imprime la liste des fichiers du répertoire */
+/* Imprime la liste des fichiers du répertoire
+   Triée selon $tri et $ordre
+ */
 function print_ls($rep, $tri = 'nom', $ordre = 'asc') {
-  $lst = build_tab($rep, scandir($rep), $tri, $ordre);
-  
-  /*print_r($lst);*/
+
+  $lst = build_tab($rep, scandir($rep), $tri, $ordre);  
 
   if ($dir = scandir($rep)) {
-    $lst = build_tab($rep, scandir($rep), $tri, $ordre);
+    $lst = build_tab($rep, $dir, $tri, $ordre);
+    /* Parcourt le tableau des fichiers et genere le code HTML */
     foreach ($lst as $idx => $elem) {
       if ($elem['nom'] != '.') { 
 	$cache="";

@@ -1,7 +1,6 @@
 <?php
-
 require('vues.php');
-$repBase = '/home/vincent';
+$repBase = '/home';
 ?>
 
 <!doctype html>
@@ -42,13 +41,16 @@ $repBase = '/home/vincent';
   <input id='upFile' type="file"></input>
   </nav>
    <section id="lst" class="row">
+
 <?php
-   print_ls('/home/vincent');
+  /* Premier chargement */
+   print_ls($repBase);
 
 ?>
 </section>
   </main>
 
+<!-- Div du dialogue resultat upload-->
 <div class="modal fade" id="upInfos" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -61,6 +63,8 @@ $repBase = '/home/vincent';
     </div>
   </div>
 </div>
+
+<!-- Div du dialogue infos fichiers-->
 <div class="modal fade" id="infos" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">

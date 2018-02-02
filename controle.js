@@ -1,55 +1,55 @@
-function loadLst(chemin, tri = 'nom') {
+/* Charge le contenu principal de la page */
+function loadLst(chemin, tri = undefined) {
+    if (tri == undefined)
+	tri = $( "#tri option:selected" ).val();
 
+    /* Met à jour le contenu de #lst */
     $('#lst').load('actions.php', 'dir=' + chemin + '&tri=' + tri, 
-		    function() {
-			$('.bout-rep').click(expandDir);
-			$('.cache').toggle(false);
-			$('#checkCache').prop('checked', false);
+		   function() {
+		       /* Callback pour les clics */
+		       $('.bout-rep').click(expandDir);
+		       
+		       /* Cache les fichiers cachés et décoche la checkbox*/
+		       $('.cache').toggle(false);
+		       $('#checkCache').prop('checked', false);
 		    });
     $('#monPath').val(chemin);
 }
 
+/* Clic sur un dossier */
 function expandDir(evt) {
     var chemin = evt.target.dataset.path;
-    var tri = $( "#tri option:selected" ).val();;
 
-    loadLst(chemin, tri);
+    loadLst(chemin);
 }
 
+/* Clic sur le bouton UP*/
 function butUp(evt) {
     var chemin = $('#elemUp').data('path');
-    var tri = $( "#tri option:selected" ).val();;
 
-    loadLst(chemin, tri);
+    loadLst(chemin);
 }
 
+/* Clic sur le home */
 function butHome(evt) {
     var chemin = '/home/vincent';
-    var tri = $( "#tri option:selected" ).val();;
 
-    loadLst(chemin, tri);
+    loadLst(chemin);
 }
 
-
-function changePath() {
+/* Changement dans le input ou le tri */
+function changeOptions() {
     var chemin = $('#monPath').val();
-    var tri = $( "#tri option:selected" ).val();;
 
-    loadLst(chemin, tri);
+    loadLst(chemin);
 }
 
-function changeTri(evt) {
-    var chemin = $('#monPath').val();
-    var tri = $( "#tri option:selected" ).val();;
-
-    loadLst(chemin, tri);
-}
-
+/* Checkbox fichiers cachés */
 function toggleCaches(evt) {
     $('.cache').toggle();
 }
 
-
+/* Infos sur un fichier */
 function majInfos(datas) {
     $("#infosTaille").html(datas[0]);
     $("#infosProprio").html(datas[1]);
@@ -59,11 +59,11 @@ function majInfos(datas) {
     $("#infosMod").html(datas[5]);
 }
 
+/* La popup des infos sur un fichier */
 function prepInfos(evt) {
     var elem = evt.relatedTarget;
     var url = "actions.php?fic=" + elem.dataset.fic;
 
-    console.log("modal show");
     $('#infos .modal-header h4').html(elem.dataset.fic);
     
     $.ajax({
@@ -73,6 +73,7 @@ function prepInfos(evt) {
     });
 }
 
+/* Upload d'un fichier */
 function upFile(evt) {
     var formData = new FormData();
     var chemin = $('#monPath').val();
@@ -80,9 +81,10 @@ function upFile(evt) {
     formData.append('fic_chemin', chemin);
     formData.append( 'file', $('#upFile')[0].files[0]);
 
-    
+    /* Declenche le modal avec message d'attente */
     $('#upInfos h4').html("Chargement en cours...");
     $('#upInfos').modal();
+
     $.ajax({
 	type: 'POST',
 	url: 'actions.php', 
@@ -91,9 +93,9 @@ function upFile(evt) {
 	contentType: false,
 	encode: true,
 	success: function(data) {
+	    /* Maj du modal */
 	    if (data != "" && JSON.parse(data)) $('#upInfos h4').html("Fichier uploadé avec succès");
 	    else $('#upInfos h4').html("Échec de l'upload");
-	    //$('#upInfos').modal();
 	    loadLst(chemin);
 	},
 	error: function() {
@@ -102,17 +104,20 @@ function upFile(evt) {
     });
 }
 
+
 function init() {
     $('.cache').toggle();
+
+    /* Init des events handlers */
     $('.bout-rep').click(expandDir);
     $('#up').click(butUp);
     $('#home').click(butHome);
-    $('#monPath').change(changePath);
+    $('#monPath').change(changeOptions);
     
     $('#checkCache').change(toggleCaches);
 
     $("#infos").on('show.bs.modal', prepInfos);
-    $('#tri').change(changeTri);
+    $('#tri').change(changeOptions);
     $('#upFile').change(upFile);
 }
 
